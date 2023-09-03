@@ -1,0 +1,10 @@
+header {
+    background-image: linear-gradient(to top right, rgba(138,43,226,0), rgba(138,43,226,1));
+    color: white;
+}
+
+.card {
+    width: 12rem;
+    background-color: blueviolet;
+}
+
