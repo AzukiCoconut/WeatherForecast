@@ -1,11 +1,45 @@
 var searchBtn = $('#searchBtn');
+var cityBtn = $('#pastSearchItem');
 var forecastEl = $('#cards');
 var currentEl = $('#current');
+var historyEl = $('#history');
 
 const APPID = 'edde7c8a699268425a7fba556907872f';
 let lon = '';
 let lat = '';
+let savedSearch = [];
 
+
+function displayPastSearch(){
+    savedSearch = JSON.parse(localStorage.getItem('pastSearch'));
+    if (savedSearch === null){
+        return;
+    }
+    for(var i=0; i<savedSearch.length; i++){
+        var searchedCity = $('<button>');
+        searchedCity.attr('type', 'button');
+        searchedCity.attr('id', 'pastSearchItem');
+        searchedCity.addClass('btn btn-secondary');
+        searchedCity.text(savedSearch[i].City);
+        searchedCity.on("click", handlePastSearch);
+
+        historyEl.append(searchedCity);
+    }
+}
+function saveSearch(city){
+    savedSearch = JSON.parse(localStorage.getItem('pastSearch'));
+    var item = {'City' : city};
+    if (savedSearch === null) {
+        var pastSearch = [];
+        pastSearch.push(item);
+        localStorage.setItem('pastSearch', JSON.stringify(pastSearch));
+        displayPastSearch();
+    } else {
+        savedSearch.push(item);
+        localStorage.setItem('pastSearch', JSON.stringify(savedSearch));
+        displayPastSearch();
+    }
+}
 function getCityCoord(city) {
     var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APPID;
     fetch(url)
@@ -39,6 +73,7 @@ function getCityCurrentWeather(lat, lon) {
 
 
         currentEl.append(title, currentCondition, temp, wind, humidity);
+        saveSearch(data.name);
     })
 }
 function getCityForecastWeather(lat, lon) {
@@ -71,42 +106,27 @@ function getCityForecastWeather(lat, lon) {
             }
             
         }
+
         }
     );
+}
+
+function handlePastSearch(event) {
+    var city = event.target.textContent;
+    forecastEl.empty();
+    currentEl.empty();
+    historyEl.empty();
+    getCityCoord(city);
 }
 
 function handleSearchFunction() {
     var city = $('#city').val();
     forecastEl.empty();
     currentEl.empty();
+    historyEl.empty();
     getCityCoord(city);
     
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 searchBtn.on('click', handleSearchFunction);
+displayPastSearch();
