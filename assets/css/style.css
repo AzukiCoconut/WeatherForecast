@@ -8,3 +8,10 @@ header {
     background-color: blueviolet;
 }
 
+img {
+    width: 50px;
+}
+
+#current h2 {
+    display: inline;
+}
