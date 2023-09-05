@@ -6,6 +6,7 @@ header {
 .card {
     width: 12rem;
     background-color: blueviolet;
+    margin-bottom: 20px;
 }
 
 img {
@@ -19,4 +20,14 @@ img {
 
 .message{
     color: red;
+}
+
+@media screen and (max-width: 960px){
+    .card {
+        margin: 20px;
+    }
+
+    h2 {
+        font-size: 100%;
+    }
 }
