@@ -10,8 +10,13 @@ header {
 
 img {
     width: 50px;
+    z-index: 1;
 }
 
 #current h2 {
     display: inline;
+}
+
+.message{
+    color: red;
 }

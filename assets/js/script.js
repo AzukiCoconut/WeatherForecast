@@ -3,7 +3,7 @@ var cityBtn = $('#pastSearchItem');
 var forecastEl = $('#cards');
 var currentEl = $('#current');
 var historyEl = $('#history');
-
+var tooltipTriggerList = [];
 const APPID = 'edde7c8a699268425a7fba556907872f';
 let lon = '';
 let lat = '';
@@ -26,6 +26,14 @@ function displayPastSearch(){
         historyEl.append(searchedCity);
     }
 }
+function isAlreadySaved(array, city) {
+    for (var i=0; i<array.length; i++){
+        if (array[i].City === city){
+            return true;
+        } 
+    }
+    return false;
+}
 function saveSearch(city){
     savedSearch = JSON.parse(localStorage.getItem('pastSearch'));
     var item = {'City' : city};
@@ -35,8 +43,10 @@ function saveSearch(city){
         localStorage.setItem('pastSearch', JSON.stringify(pastSearch));
         displayPastSearch();
     } else {
-        savedSearch.push(item);
-        localStorage.setItem('pastSearch', JSON.stringify(savedSearch));
+        if (!isAlreadySaved(savedSearch, city)){
+            savedSearch.push(item);
+            localStorage.setItem('pastSearch', JSON.stringify(savedSearch));
+        }
         displayPastSearch();
     }
 }
@@ -44,12 +54,14 @@ function getCityCoord(city) {
     var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APPID;
     fetch(url)
         .then(function(response){
-            return response.json();
-        })
-        .then (function (data){
-           getCityCurrentWeather(data.coord.lat, data.coord.lon);
-           getCityForecastWeather(data.coord.lat, data.coord.lon);
-        });
+            if (response.ok){
+                response.json().then (function (data){
+                        getCityCurrentWeather(data.coord.lat, data.coord.lon);
+                        getCityForecastWeather(data.coord.lat, data.coord.lon);
+                });
+            } else {
+                $('.message').text('City not found');
+            }});
 }
 
 function getCityCurrentWeather(lat, lon) {
@@ -74,6 +86,7 @@ function getCityCurrentWeather(lat, lon) {
 
         currentEl.append(title, currentCondition, temp, wind, humidity);
         saveSearch(data.name);
+        
     })
 }
 function getCityForecastWeather(lat, lon) {
@@ -121,6 +134,11 @@ function handlePastSearch(event) {
 
 function handleSearchFunction() {
     var city = $('#city').val();
+    if (city === '') {
+        $('.message').text('Please enter a valid city.');
+        return;
+    }
+    $('.message').empty();
     forecastEl.empty();
     currentEl.empty();
     historyEl.empty();
