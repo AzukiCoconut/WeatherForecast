@@ -1,33 +1,40 @@
+/* Established a gradient background for the header with white text */
 header {
     background-image: linear-gradient(to top right, rgba(138,43,226,0), rgba(138,43,226,1));
     color: white;
 }
 
+/* images (weather icons) are caped to being 50px wide */
+img {
+    width: 50px;
+}
+
+/* Weather cards are kept small with a bottom margin of 20px */
 .card {
     width: 12rem;
     background-color: blueviolet;
     margin-bottom: 20px;
 }
 
-img {
-    width: 50px;
-    z-index: 1;
-}
-
+/* keep the header for current weather inline */
 #current h2 {
     display: inline;
 }
 
+/* the message text should be red */
 .message{
     color: red;
 }
 
+/* Adjust the application responsiveness for smaller screens */
 @media screen and (max-width: 960px){
+    h2 {
+        font-size: 100%;
+    }
+    
     .card {
         margin: 20px;
     }
 
-    h2 {
-        font-size: 100%;
-    }
+    
 }
